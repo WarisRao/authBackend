@@ -28,23 +28,21 @@ function _post (req,res){
         
     User.findOne({email,userName})
         .then((user)=>{
-            if(user){
-                return res.json({token:'null',error:'username or email already registered'}); 
-            }
-            else{
-                 
+            if(!user){                
                 const newUser = new User({email,password,name,mobile,userName,role});
                 newUser.save()
                     .then((user)=>{
-                        let token = jwt.sign({user},'lalalala');
+                        let id = user._id, role = user.role;
+                        let token = jwt.sign({id,role},'lalala');
                         return  res.json({token,error:'null'});
                     
                     })    
                     .catch((err)=>{
                         console.log(err);
                     });
-            
             }
+            return res.json({token:'null',error:'username or email already registered'}); 
+            
         })
         .catch((err)=>{
             console.log(err);
