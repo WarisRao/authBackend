@@ -1,5 +1,5 @@
 import express from 'express';
-import fs from 'fs';
+import fs, { mkdirSync } from 'fs';
 import path from 'path';
 
 const filesController = {
@@ -47,7 +47,7 @@ function _get(req,res){
                 return elem!=='..'&& elem!=='.' ;
             }))
         });
-        console.info(filesArray3);
+        
         return filesArray3;
     }
 
@@ -135,8 +135,49 @@ function _get(req,res){
         return filesObject;
     }
 
-   let directoryTree = generateDirectoryTree('./staticFiles',['node_modules','reject']);
-   res.json(directoryTree);
+    let directoryTree = generateDirectoryTree('../staticFiles',['node_modules','reject']);
+    
+    let makeDirectory = (dirObject)=>{
+        let rootPath = dirObject.name;
+
+        if(rootPath){
+
+            if(!fs.existsSync(rootPath)){
+                mkdirSync(rootPath);
+            }
+        let exPath =rootPath+'/';
+            let generate = (dirObject,path)=>{
+                console.log(dirObject);
+                let curPath = path;
+                console.log('path::',curPath);                
+
+                dirObject.children.forEach((curDirObject)=>{
+
+                    if(curDirObject.type==='directory'){
+                        curPath=curPath+curDirObject.name+'/';
+                        console.log(curPath);
+                        mkdirSync(curPath);
+                        generate(curDirObject,curPath);
+                    }
+                    else{
+
+
+                    }
+                    curPath=  path;
+                })
+
+            }
+
+            generate(dirObject,exPath);
+        }
+
+    }
+
+
+    makeDirectory(directoryTree);
+
+    res.json(directoryTree);
+
 };
 
 export default filesController;

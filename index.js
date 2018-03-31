@@ -17,24 +17,21 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json({extended:false}));
 
-// app.get('/',(req,res)=>{
-//     res.send('welecome to konfinity go to /register for registeration');
-// });
-
-// app.use('/register',registerRouter);
-
-// app.use('/files',filesRouter);
-
-// app.use('/courses',coursesRouter);
 
 function clearConsole(req,res,next){
     console.log('\x1Bc');
     next();
 }
 
-app.server.listen(3000,()=>{
-    console.log('server started on port 3000');
+app.server.listen(3000,(err)=>{
+    if(err){
+        console.log('error in index :::',err);
+    }
+    else{
+        console.log('server started on port 3000');
+    }
+    
 });
-
+ 
 router(app);
 
